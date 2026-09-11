@@ -12,12 +12,17 @@ CREATE TABLE IF NOT EXISTS  mavhu.roles (
 -- ============================================
 
 INSERT INTO mavhu.roles (name) VALUES
-    ('AUDITOR'),
-    ('ESG_TEAM'),
-    ('MANAGER');
+    ('AUDITOR'), -- ALL DATA ACCESS
+    ('ESG_READER'),  -- ESG METRICS READ ONLY
+    ('ESG_CONTRIBUTOR'), -- ESG WRITE METRICS
+    ('ESG_APPROVER'); -- FOR MANAGERS TO APPROVE THE FILLED ESG DATA
+
+
 
 -- ============================================
 -- Script to add roles in the future
 --INSERT INTO mavhu.roles (name) VALUES ('NEW_ROLE');
 -- ============================================
 
+--- ROLE_USERS table : 1 user can have multiple roles
+---

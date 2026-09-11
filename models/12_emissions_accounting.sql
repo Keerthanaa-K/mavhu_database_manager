@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS  mavhu.emissions_accounting (
     id              SERIAL          PRIMARY KEY,
     customer_id     INTEGER         NOT NULL REFERENCES mavhu.customers (id)        ON DELETE RESTRICT ON UPDATE CASCADE,
     estate_id       INTEGER         NOT NULL REFERENCES mavhu.estates (id)          ON DELETE RESTRICT ON UPDATE CASCADE,
-    user_id         INTEGER         NOT NULL REFERENCES mavhu.users (id)            ON DELETE RESTRICT ON UPDATE CASCADE,
+    created_by      INTEGER                  REFERENCES mavhu.users (id)            ON DELETE RESTRICT ON UPDATE CASCADE,
     crop_cycle_id   INTEGER         NOT NULL REFERENCES mavhu.crop_cycles (id)      ON DELETE RESTRICT ON UPDATE CASCADE,
     emission_id     INTEGER         NOT NULL REFERENCES mavhu.emission_factors (id) ON DELETE RESTRICT ON UPDATE CASCADE,
     quantity        DECIMAL(10,4)   NOT NULL,
@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS  mavhu.emissions_accounting (
     end_date        TIMESTAMPTZ     NOT NULL,
     ton_co2e        DECIMAL(10,4),  -- quantity * emission_factors.factor / 1000
     scope           INTEGER         NOT NULL CHECK (scope BETWEEN 1 AND 3),
+    approved        BOOLEAN         NOT NULL DEFAULT FALSE,
+    approved_by     INTEGER                  REFERENCES mavhu.users (id)            ON DELETE RESTRICT ON UPDATE CASCADE,
     audit_trail     TEXT,
     note            TEXT,
     created_at      TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,

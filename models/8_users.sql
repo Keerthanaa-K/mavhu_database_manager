@@ -9,9 +9,9 @@ CREATE TABLE IF NOT EXISTS  mavhu.users (
     estate_id   INTEGER                  REFERENCES mavhu.estates (id)   ON DELETE SET NULL ON UPDATE CASCADE,
     email       VARCHAR(255)    NOT NULL UNIQUE,
     password    VARCHAR(255)    NOT NULL, -- password hashed at application layer
-    role_id     INTEGER         NOT NULL REFERENCES mavhu.roles (id)     ON DELETE RESTRICT ON UPDATE CASCADE,
     created_at  TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at  TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at  TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    is_deleted      BOOLEAN             NOT NULL DEFAULT FALSE
 );
 
 -- ============================================

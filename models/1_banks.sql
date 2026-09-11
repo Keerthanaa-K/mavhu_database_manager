@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS  mavhu.banks (
     phone_number    VARCHAR(255),
     identifier      VARCHAR(255)        NOT NULL,
     created_at      TIMESTAMPTZ         NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at      TIMESTAMPTZ         NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at      TIMESTAMPTZ         NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    is_deleted      BOOLEAN             NOT NULL DEFAULT FALSE
 );
 
 
