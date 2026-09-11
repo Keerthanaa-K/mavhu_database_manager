@@ -7,8 +7,10 @@ CREATE TABLE IF NOT EXISTS mavhu.user_roles(
 
      id          SERIAL          PRIMARY KEY,
      user_id     INTEGER         NOT NULL REFERENCES mavhu.users (id)     ON DELETE RESTRICT ON UPDATE CASCADE,
-     role_id     INTEGER         NOT NULL REFERENCES mavhu.roles (id)     ON DELETE RESTRICT ON UPDATE CASCADE
-     audit_trail     TEXT,
+     role_id     INTEGER         NOT NULL REFERENCES mavhu.roles (id)     ON DELETE RESTRICT ON UPDATE CASCADE,
+     audit_trail TEXT,
+     created_at  TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+     updated_at  TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP
 
 );
 
