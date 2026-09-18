@@ -5,9 +5,9 @@
 CREATE TABLE IF NOT EXISTS  mavhu.emissions_accounting (
     id              SERIAL          PRIMARY KEY,
     customer_id     INTEGER         NOT NULL REFERENCES mavhu.customers (id)        ON DELETE RESTRICT ON UPDATE CASCADE,
-    estate_id       INTEGER         NOT NULL REFERENCES mavhu.estates (id)          ON DELETE RESTRICT ON UPDATE CASCADE,
+    estate_id       INTEGER                  REFERENCES mavhu.estates (id)          ON DELETE RESTRICT ON UPDATE CASCADE,
     created_by      INTEGER                  REFERENCES mavhu.users (id)            ON DELETE RESTRICT ON UPDATE CASCADE,
-    crop_cycle_id   INTEGER         NOT NULL REFERENCES mavhu.crop_cycles (id)      ON DELETE RESTRICT ON UPDATE CASCADE,
+    crop_cycle_id   INTEGER                  REFERENCES mavhu.crop_cycles (id)      ON DELETE RESTRICT ON UPDATE CASCADE,
     emission_id     INTEGER         NOT NULL REFERENCES mavhu.emission_factors (id) ON DELETE RESTRICT ON UPDATE CASCADE,
     quantity        DECIMAL(10,4)   NOT NULL,
     start_date      TIMESTAMPTZ     NOT NULL,
