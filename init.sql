@@ -56,5 +56,52 @@ CREATE EXTENSION IF NOT EXISTS "pg_trgm";      -- Trigram text search
 -- CREATE EXTENSION IF NOT EXISTS "postgis";   -- Geospatial (later if needed)
 
 
+-- ============================================
+-- Ingestion service role: insert/delete access on all mavhu tables
+-- ============================================
+
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'mavhu_ingestion_service') THEN
+        CREATE ROLE mavhu_ingestion_service WITH
+            LOGIN
+            PASSWORD 'MAvHU_ingestion'
+            NOSUPERUSER
+            NOCREATEDB
+            NOCREATEROLE
+            CONNECTION LIMIT 20;
+    END IF;
+END
+$$;
+
+ALTER ROLE mavhu_ingestion_service SET search_path TO mavhu, public;
+
+GRANT CONNECT ON DATABASE mavhu_db TO mavhu_ingestion_service;
+GRANT USAGE ON SCHEMA mavhu TO mavhu_ingestion_service;
+
+-- Existing tables/sequences
+GRANT INSERT, DELETE ON ALL TABLES IN SCHEMA mavhu TO mavhu_ingestion_service;
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA mavhu TO mavhu_ingestion_service;
+
+-- Future tables/sequences created by the role that runs the model/migration scripts (postgres)
+ALTER DEFAULT PRIVILEGES IN SCHEMA mavhu
+    GRANT INSERT, DELETE ON TABLES TO mavhu_ingestion_service;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA mavhu
+    GRANT USAGE ON SEQUENCES TO mavhu_ingestion_service;
+
+-- ============================================
+-- mavhu_ingestion_service needs SELECT alongside INSERT/DELETE:
+-- Postgres requires SELECT on any column referenced in a DELETE ... WHERE
+-- clause (or an INSERT ... RETURNING list) even though the row-level
+-- operation itself is governed by INSERT/DELETE privilege.
+-- ============================================
+
+GRANT SELECT ON ALL TABLES IN SCHEMA mavhu TO mavhu_ingestion_service;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA mavhu
+    GRANT SELECT ON TABLES TO mavhu_ingestion_service;
+
+
 
 
