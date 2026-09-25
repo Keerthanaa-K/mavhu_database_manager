@@ -102,6 +102,7 @@ GRANT SELECT ON ALL TABLES IN SCHEMA mavhu TO mavhu_ingestion_service;
 ALTER DEFAULT PRIVILEGES IN SCHEMA mavhu
     GRANT SELECT ON TABLES TO mavhu_ingestion_service;
 
+GRANT CREATE ON SCHEMA mavhu TO mavhu_ingestion_service;
 
 
 
