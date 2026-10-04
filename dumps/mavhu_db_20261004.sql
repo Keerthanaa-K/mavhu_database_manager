@@ -18,6 +18,38 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Prerequisites outside the mavhu schema. pg_dump -n mavhu does not include them, so a restore
+-- into a fresh database (e.g. the EC2 server) would fail on the customers table and the
+-- updated_at triggers. Both are created only when missing, so re-running this file is safe.
+--
+
+DO $do$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace
+                   WHERE n.nspname = 'public' AND t.typname = 'customer_identifier') THEN
+        CREATE TYPE public.customer_identifier AS ENUM ('BANK', 'AGROBUSINESS', 'PLATFORM');
+    END IF;
+END
+$do$;
+
+ALTER TYPE public.customer_identifier ADD VALUE IF NOT EXISTS 'PLATFORM';
+
+DO $do$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+                   WHERE n.nspname = 'public' AND p.proname = 'update_updated_at') THEN
+        CREATE FUNCTION public.update_updated_at() RETURNS trigger LANGUAGE plpgsql AS $fn$
+        BEGIN
+            NEW.updated_at = CURRENT_TIMESTAMP;
+            RETURN NEW;
+        END;
+        $fn$;
+    END IF;
+END
+$do$;
+
+
 ALTER TABLE IF EXISTS ONLY mavhu.users DROP CONSTRAINT IF EXISTS users_estate_id_fkey;
 ALTER TABLE IF EXISTS ONLY mavhu.users DROP CONSTRAINT IF EXISTS users_customer_id_fkey;
 ALTER TABLE IF EXISTS ONLY mavhu.user_roles DROP CONSTRAINT IF EXISTS user_roles_user_id_fkey;
